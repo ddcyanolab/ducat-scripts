@@ -32,13 +32,13 @@ for i, ch in enumerate(image.getChannels()):
     print(ch.getLabel())
     # Return as output. Key is string, value is rtype
     client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
-    
+
 def find_chan(image,channel):
-    
+
     """
     Finds the specified channel number from the image metadata
     """
-    
+
     for i, chan in enumerate(image.getChannels()):
         #print(i, dic)
         if chan.getLabel() == channel:
@@ -46,6 +46,7 @@ def find_chan(image,channel):
     return -1
 
 # get DsRed Channel
+pixels = image.getPrimaryPixels()
 dsred_channel = find_chan(image,'DsRed')
 dsred = pixels.getPlane(0, dsred_channel, 0)
 print(dsred.shape)
