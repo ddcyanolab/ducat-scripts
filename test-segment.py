@@ -12,7 +12,7 @@ import omero
 from getpass import getpass
 from cellpose import models, utils,plot,io
 import numpy as np
-
+from skimage.measure import label
 # Define the script name & description, and a single 'required' parameter
 client = scripts.client("test-segment.py", "Get channel names and test segmentation",
                         scripts.Long("imageId", optional=False))
