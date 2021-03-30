@@ -1,5 +1,5 @@
 #!/home/ducatlab/miniconda3/envs/env/bin/python
-#import cellpose
+import cellpose
 import omero, omero.scripts as scripts
 client = scripts.client("ping.py", "simple ping script",
                         scripts.Long("a"), scripts.String("b"))
