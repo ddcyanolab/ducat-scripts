@@ -32,7 +32,7 @@ for i, ch in enumerate(image.getChannels()):
     print(ch.getLabel())
     # Return as output. Key is string, value is rtype
     client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
-
+# function to find a specific channel by name
 def find_chan(image,channel):
 
     """
@@ -44,7 +44,16 @@ def find_chan(image,channel):
         if chan.getLabel() == channel:
             return i
     return -1
-
+# We have a helper function for creating an ROI and linking it to new shapes
+def create_roi(img, shapes):
+    # create an ROI, link it to Image
+    roi = omero.model.RoiI()
+    # use the omero.model.ImageI that underlies the 'image' wrapper
+    roi.setImage(img._obj)
+    for shape in shapes:
+        roi.addShape(shape)
+    # Save the ROI (saves any linked shapes too)
+    return updateService.saveAndReturnObject(roi)
 # get DsRed Channel
 pixels = image.getPrimaryPixels()
 dsred_channel = find_chan(image,'DsRed')
@@ -53,5 +62,29 @@ print(dsred.shape)
 
 use_GPU = models.use_gpu()
 print('>>> GPU activated? %d'%use_GPU)
+
+# segment cell
+model = models.Cellpose(gpu=False,model_type='cyto')
+
+ImageMask = False
+
+roi_service = conn.getRoiService()
+result = roi_service.findByImage(image.getId(), None)
+for roi in result.rois:
+    for i,s in enumerate(roi.copyShapes()):
+        if type(s) == omero.model.MaskI:
+            ImageMask = True
+            break
+# Segment
+if ImageMask == False:
+    masks, flows, styles, diams = model.eval(dsred, diameter=20,flow_threshold=0)
+
+    # create segmentation roi
+    updateService = conn.getUpdateService()
+    msks = omero_rois.masks_from_label_image(label(masks))
+    create_roi(image,msks)
+else:
+    print('already contains a mask')
+
 # Cleanup
 client.closeSession()
