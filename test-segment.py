@@ -9,7 +9,6 @@ from omero.rtypes import (
 )
 import omero_rois
 import omero
-from getpass import getpass
 from cellpose import models, utils,plot,io
 import numpy as np
 from skimage.measure import label
@@ -64,7 +63,7 @@ use_GPU = models.use_gpu()
 print('>>> GPU activated? %d'%use_GPU)
 
 # segment cell
-model = models.Cellpose(gpu=False,model_type='cyto')
+model = models.Cellpose(gpu=use_GPU,model_type='cyto')
 
 ImageMask = False
 
