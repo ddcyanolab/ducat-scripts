@@ -54,7 +54,7 @@ def create_roi(img, shapes):
     # Save the ROI (saves any linked shapes too)
     return updateService.saveAndReturnObject(roi)
 
-def segment_images(client,conn, image_ids):
+def segment_images(client,conn, image_ids,parameter_map):
     """
     Load images, segment cells using Cellpose, return masks as OMERO ROIs
     """
@@ -153,7 +153,7 @@ def run_script():
         # wrap client to use the Blitz Gateway
         conn = BlitzGateway(client_obj=client)
         images,message= get_image_list(conn, parameter_map)
-        segment_images(client,conn,images)
+        segment_images(client,conn,images,parameter_map)
         message = str(len(images)) + ' images'
         # Return message, new image and new dataset (if applicable) to the
         # client
