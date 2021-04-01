@@ -63,13 +63,15 @@ def segment_images(client,conn, image_ids,parameter_map):
     use_GPU = models.use_gpu()
     print('>>> GPU activated? %d'%use_GPU)
     if use_GPU == 1 or True:
-        GPUmessage = '>>> active'
+        GPUmessage = 'active'
     else:
-        GPUmessage = '>>> inactive'
-    client.setOutput('GPU Status: ',rstring(GPUmessage))
+        GPUmessage = 'inactive'
+    client.setOutput('GPU Status ',rstring(GPUmessage))
     seg_chan_name = parameter_map["Segmentation_Channel"]
+    diameter = parameter_map["diameter"]
+    flow_threshold = parameter_map["flow_threshold"]
     #client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
-    client.setOutput('Segmentation Channel:',rstring(seg_chan_name))
+    client.setOutput('Channel',rstring(seg_chan_name))
 
     #load cellpose model
     model = models.Cellpose(gpu=use_GPU,model_type='cyto')
@@ -81,7 +83,8 @@ def segment_images(client,conn, image_ids,parameter_map):
             pixels = image.getPrimaryPixels()
             seg_chan_num = find_chan(image,seg_chan_name)
             seg_chan_pixels = pixels.getPlane(0, seg_chan_num, 0)
-            masks, flows, styles, diams = model.eval(seg_chan_pixels, diameter=20,flow_threshold=0)
+            masks, flows, styles, diams = model.eval(seg_chan_pixels,
+            diameter=diameter,flow_threshold=flow_threshold)
             # create segmentation roi
             msks = omero_rois.masks_from_label_image(label(masks))
             create_roi(conn,image,msks)
@@ -141,9 +144,17 @@ def run_script():
             "process.").ofType(rlong(0)),
 
         scripts.String(
-            "Segmentation_Channel", optional=True, grouping="3",
+            "Segmentation_Channel", optional=False, grouping="3",
             default='DsRed',
             description="Channel to use for cell segmentation"),
+        scripts.Int(
+            "Diameter", optional=False, grouping="4",
+            default=20,
+            description="Approximate size of cells, in pixels"),
+        scripts.Float(
+            "Flow_threshold", optional=False, grouping="5",
+            default=0.4,
+            description="Error checking stringency"),
 
 
     )
@@ -157,7 +168,7 @@ def run_script():
         message = str(len(images)) + ' images'
         # Return message, new image and new dataset (if applicable) to the
         # client
-        client.setOutput('Processed: ',rstring(message))
+        client.setOutput('Processed',rstring(message))
 
     finally:
         client.closeSession()
