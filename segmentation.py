@@ -161,6 +161,9 @@ def run_script():
             default=0.4,
             description="Error checking stringency"),
 
+        authors=["Jonathan Sakkos"],
+        institutions=["Michigan State University"],
+        contact="sakkosjo@msu.edu",
 
     )
 
