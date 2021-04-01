@@ -62,17 +62,16 @@ def segment_images(client,conn, image_ids):
     use_GPU = models.use_gpu()
     print('>>> GPU activated? %d'%use_GPU)
     if use_GPU == 1 or True:
-        GPUmessage = '>>> GPU activated'
+        GPUmessage = '>>> active'
     else:
-        GPUmessage = '>>> GPU not activated'
-    client.setOutput(rstring(GPUmessage))
+        GPUmessage = '>>> inactive'
+    client.setOutput('GPU Status: ',rstring(GPUmessage))
     seg_chan_name = parameter_map["Segmentation_Channel"]
     #client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
-    client.setOutput(rstring('Segmentation Channel:')+rstring(seg_chan_name))
+    client.setOutput('Segmentation Channel:',rstring(seg_chan_name))
 
     #load cellpose model
     model = models.Cellpose(gpu=use_GPU,model_type='cyto')
-    message = ""
     for imageId in image_ids:
         image = conn.getObject("Image", imageId)
         print("---- Processing image ", image.getId(), image.getName())
@@ -155,10 +154,10 @@ def run_script():
         conn = BlitzGateway(client_obj=client)
         images,message= get_image_list(conn, parameter_map)
         segment_images(client,conn,images)
-        message = 'Processed ' + str(len(images)) + ' images'
+        message = str(len(images)) + ' images'
         # Return message, new image and new dataset (if applicable) to the
         # client
-        client.setOutput(rstring(message))
+        client.setOutput('Processed: ',rstring(message))
 
     finally:
         client.closeSession()
