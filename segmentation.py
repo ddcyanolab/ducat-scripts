@@ -78,7 +78,7 @@ def segment_images(client,conn, image_ids,parameter_map):
         ImageMask = check_for_mask(conn,imageId)
         if ImageMask == False:
             pixels = image.getPrimaryPixels()
-            seg_chan_num = find_chan(image,seg_chan)
+            seg_chan_num = find_chan(image,seg_chan_name)
             seg_chan_pixels = pixels.getPlane(0, seg_chan_num, 0)
             masks, flows, styles, diams = model.eval(seg_chan_pixels, diameter=20,flow_threshold=0)
             # create segmentation roi
