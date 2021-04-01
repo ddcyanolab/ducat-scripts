@@ -71,17 +71,12 @@ def get_image_list(conn,parameter_map):
 
     data_type = parameter_map["Data_Type"]
     if data_type == "Image":
-        dataset = None
-        objects.sort(key=lambda x: (x.getName()))    # Sort images by name
-        image_ids = [image.id for image in objects]
+        image_ids = parameter_map["IDs"]
+        #[image.id for image in objects]
     else:
-        for dataset in objects:
-            images = list(dataset.listChildren())
-            if not images:
-                continue
-            images.sort(key=lambda x: (x.getName()))
-            image_ids = [i.getId() for i in images]
-    return image_ids, message
+        image_ids = conn.getObjects('Image', opts={'dataset': parameter_map["IDs"]})
+
+    return image_ids
 
 def run_script():
     """
@@ -125,10 +120,9 @@ def run_script():
 
         #images, message = get_image_list(conn, script_params)
 
-        images, message = process_images(conn, parameter_map)
-        print(message)
+        images= get_image_list(conn, parameter_map)
         for image in images:
-            print(image.getId())
+            print(image)
         # Return message, new image and new dataset (if applicable) to the
         # client
     #    client.setOutput("Message", rstring(message))
