@@ -170,8 +170,8 @@ def run_script():
         conn = BlitzGateway(client_obj=client)
         images,message= get_image_list(conn, parameter_map)
         msg, skpmsg = segment_images(client,conn,images,parameter_map)
-        client.setOutput('Processed',rstring(msg))
-        client.setOutput('Skipped',rstring(skpmsg))
+        client.setOutput('Processed',wrap(msg))
+        client.setOutput('Skipped', wrap(skpmsg))
     finally:
         client.closeSession()
 if __name__ == "__main__":
