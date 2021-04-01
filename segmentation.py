@@ -94,8 +94,8 @@ def segment_images(client,conn, image_ids,parameter_map):
             print('already contains a mask')
         message = str(len(image_ids)) + ' images'
         skipped_message = str(skipped) + ' images'
-        client.setOutput('Processed',rstring(message))
-        client.setOutput('Skipped',rstring(skipped_message))
+    client.setOutput('Processed',rstring(message))
+    client.setOutput('Skipped',rstring(skipped_message))
     return
 
 def get_image_list(conn,parameter_map):
