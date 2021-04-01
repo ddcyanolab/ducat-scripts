@@ -50,7 +50,7 @@ def run_script():
                 "process.").ofType(rlong(0)),
 
             scripts.String(
-                "Segmentation_Channel", optional=true, grouping="3",
+                "Segmentation_Channel", optional=True, grouping="3",
                 default='DsRed',
                 description="Channel to use for cell segmentation"),
 
