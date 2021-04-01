@@ -94,9 +94,8 @@ def segment_images(client,conn, image_ids,parameter_map):
             print('already contains a mask')
         message = str(len(image_ids)) + ' images'
         skipped_message = str(skipped) + ' images'
-    client.setOutput('Processed',rstring(message))
-    client.setOutput('Skipped',rstring(skipped_message))
-    return
+
+    return message, skipped_message
 
 def get_image_list(conn,parameter_map):
     """
@@ -170,8 +169,9 @@ def run_script():
         # wrap client to use the Blitz Gateway
         conn = BlitzGateway(client_obj=client)
         images,message= get_image_list(conn, parameter_map)
-        segment_images(client,conn,images,parameter_map)
-
+        msg, skpmsg = segment_images(client,conn,images,parameter_map)
+        client.setOutput('Processed',rstring(msg))
+        client.setOutput('Skipped',rstring(skpmsg))
     finally:
         client.closeSession()
 if __name__ == "__main__":
