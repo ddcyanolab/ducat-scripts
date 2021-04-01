@@ -44,7 +44,7 @@ def check_for_mask(conn,imageId):
                 break
     return ImageMask
 # We have a helper function for creating an ROI and linking it to new shapes
-def create_roi(img, shapes):
+def create_roi(conn,img, shapes):
     # create an ROI, link it to Image
     roi = omero.model.RoiI()
     # use the omero.model.ImageI that underlies the 'image' wrapper
@@ -52,6 +52,7 @@ def create_roi(img, shapes):
     for shape in shapes:
         roi.addShape(shape)
     # Save the ROI (saves any linked shapes too)
+    updateService = conn.getUpdateService()
     return updateService.saveAndReturnObject(roi)
 
 def segment_images(client,conn, image_ids,parameter_map):
@@ -82,9 +83,8 @@ def segment_images(client,conn, image_ids,parameter_map):
             seg_chan_pixels = pixels.getPlane(0, seg_chan_num, 0)
             masks, flows, styles, diams = model.eval(seg_chan_pixels, diameter=20,flow_threshold=0)
             # create segmentation roi
-            updateService = conn.getUpdateService()
             msks = omero_rois.masks_from_label_image(label(masks))
-            create_roi(image,msks)
+            create_roi(conn,image,msks)
         else:
             print('already contains a mask')
     return
