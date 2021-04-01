@@ -31,7 +31,7 @@ def run_script():
     The main entry point of the script, as called by the client via the
     scripting service, passing the required parameters.
     """
-
+    data_types = [rstring('Image')]
     try:
 
         client = scripts.client(
