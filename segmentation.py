@@ -129,7 +129,7 @@ def run_script():
 
         #images, message = get_image_list(conn, script_params)
 
-        images= get_image_list(conn, parameter_map)
+        images,message= get_image_list(conn, parameter_map)
         for image in images:
             print(image)
         # Return message, new image and new dataset (if applicable) to the
