@@ -21,6 +21,20 @@ from cellpose import models, utils,plot,io
 import numpy as np
 from skimage.measure import label
 
+# function to find a specific channel by name
+def find_chan(image,channel):
+
+    """
+    Finds the specified channel number from the image metadata
+    """
+
+    for i, chan in enumerate(image.getChannels()):
+        #print(i, dic)
+        if chan.getLabel() == channel:
+            return i
+    return -1
+
+
 def process_images(conn, parameter_map):
     """
     Process the script params to make a list of channel_offsets, then iterate
@@ -61,10 +75,10 @@ def load_images(conn, image_id):
 
 def get_image_list(conn,parameter_map):
     """
-    Load the images in the specified dataset
+    Gets image IDs from the list of images or dataset
     :param conn: The BlitzGateway
     :param parameter_map: The dataset's id
-    :return: The Images or None
+    :return: image IDs or None
     """
     # Get images or datasets
     message = ""
@@ -76,6 +90,7 @@ def get_image_list(conn,parameter_map):
 
     data_type = parameter_map["Data_Type"]
     if data_type == "Image":
+        objects.sort(key=lambda x: (x.getName()))    # Sort images by name
         image_ids = [image.id for image in objects]
         #[image.id for image in objects]
     else:
@@ -83,6 +98,7 @@ def get_image_list(conn,parameter_map):
             images = list(dataset.listChildren())
             if not images:
                 continue
+            images.sort(key=lambda x: (x.getName()))
             image_ids = [i.getId() for i in images]
 
     return image_ids, message
@@ -142,7 +158,7 @@ def run_script():
 
 
 
-
+        message = 'Processed ' + str(len(images)) + 'images'
         # Return message, new image and new dataset (if applicable) to the
         # client
         client.setOutput("Message", rstring(message))
