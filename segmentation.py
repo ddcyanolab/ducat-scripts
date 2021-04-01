@@ -61,7 +61,7 @@ def segment_images(client,conn, image_ids):
     # check if CUDA is enabled
     use_GPU = models.use_gpu()
     print('>>> GPU activated? %d'%use_GPU)
-    if use_GPU ==True:
+    if use_GPU == 1 or True:
         GPUmessage = '>>> GPU activated'
     else:
         GPUmessage = '>>> GPU not activated'
