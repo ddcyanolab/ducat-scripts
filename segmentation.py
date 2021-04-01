@@ -75,6 +75,7 @@ def segment_images(client,conn, image_ids,parameter_map):
 
     #load cellpose model
     model = models.Cellpose(gpu=use_GPU,model_type='cyto')
+    skipped = 0
     for imageId in image_ids:
         image = conn.getObject("Image", imageId)
         print("---- Processing image ", image.getId(), image.getName())
@@ -89,7 +90,12 @@ def segment_images(client,conn, image_ids,parameter_map):
             msks = omero_rois.masks_from_label_image(label(masks))
             create_roi(conn,image,msks)
         else:
+            skipped += 1
             print('already contains a mask')
+        message = str(len(image_ids)) + ' images'
+        skipped_message = str(skipped) + ' images'
+        client.setOutput('Processed',rstring(message))
+        client.setOutput('Skipped',rstring(skipped_message))
     return
 
 def get_image_list(conn,parameter_map):
@@ -165,10 +171,6 @@ def run_script():
         conn = BlitzGateway(client_obj=client)
         images,message= get_image_list(conn, parameter_map)
         segment_images(client,conn,images,parameter_map)
-        message = str(len(images)) + ' images'
-        # Return message, new image and new dataset (if applicable) to the
-        # client
-        client.setOutput('Processed',rstring(message))
 
     finally:
         client.closeSession()
