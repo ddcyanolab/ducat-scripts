@@ -31,7 +31,7 @@ def run_script():
     The main entry point of the script, as called by the client via the
     scripting service, passing the required parameters.
     """
-    data_types = [rstring('Image')]
+    data_types = [rstring('Dataset'), rstring('Image')]
     try:
 
         client = scripts.client(
@@ -49,10 +49,10 @@ def run_script():
                 description="List of Dataset IDs or Image IDs to "
                 "process.").ofType(rlong(0)),
 
-        #    scripts.String(
-            #    "Segmentation_Channel", optional=true, grouping="3",
-            #    default='DsRed',
-                #description="Channel to use for cell segmentation"),
+            scripts.String(
+                "Segmentation_Channel", optional=true, grouping="3",
+                default='DsRed',
+                description="Channel to use for cell segmentation"),
 
 
         )
