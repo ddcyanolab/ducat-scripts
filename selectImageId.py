@@ -24,7 +24,28 @@ def process_images(conn, script_params):
         return None, None, message
     image_ids = [i.getId() for i in images]
     return images, dataset, message
+def get_images(conn, script_params):
+    data_type = parameter_map["Data_Type"]
+    if data_type == "Image":
+        dataset = None
+        objects.sort(key=lambda x: (x.getName()))    # Sort images by name
+        image_ids = [image.id for image in objects]
 
+
+
+    else:
+        for dataset in objects:
+            images = list(dataset.listChildren())
+            if not images:
+                continue
+            images.sort(key=lambda x: (x.getName()))
+            image_ids = [i.getId() for i in images]
+            new_img, link = make_single_image(services, parameter_map,
+                                              image_ids, dataset, colour_map)
+            if new_img:
+                output_images.append(new_img)
+            if link:
+                links.append(link)
 
 def run_script():
     """
@@ -41,8 +62,8 @@ def run_script():
 
             scripts.String(
                 "Data_Type", optional=False, grouping="1",
-                description="Pick Images by 'Image' ID or by the ID of their "
-                "Dataset'", values=data_types, default="Image"),
+                description="Use all the images in specified 'Datasets' or choose"
+                " individual 'Images'.", values=data_types, default="Image"),
 
             scripts.List(
                 "IDs", optional=False, grouping="2",
