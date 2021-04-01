@@ -66,17 +66,26 @@ def get_image_list(conn,parameter_map):
     :param parameter_map: The dataset's id
     :return: The Images or None
     """
-
+    # Get images or datasets
+    message = ""
+    objects, log_message = script_utils.get_objects(conn, parameter_map)
+    message += log_message
+    if not objects:
+        return None, message
 
 
     data_type = parameter_map["Data_Type"]
     if data_type == "Image":
-        image_ids = parameter_map["IDs"]
+        image_ids = [image.id for image in objects]
         #[image.id for image in objects]
     else:
-        image_ids = conn.getObjects('Image', opts={'dataset': parameter_map["IDs"]})
+        for dataset in objects:
+            images = list(dataset.listChildren())
+            if not images:
+                continue
+            image_ids = [i.getId() for i in images]
 
-    return image_ids
+    return image_ids, message
 
 def run_script():
     """
