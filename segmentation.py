@@ -68,8 +68,8 @@ def segment_images(client,conn, image_ids,parameter_map):
         GPUmessage = 'inactive'
     client.setOutput('GPU Status ',rstring(GPUmessage))
     seg_chan_name = parameter_map["Segmentation_Channel"]
-    diameter = parameter_map["diameter"]
-    flow_threshold = parameter_map["flow_threshold"]
+    diameter = parameter_map["Diameter"]
+    flow_threshold = parameter_map["Flow_threshold"]
     #client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
     client.setOutput('Channel',rstring(seg_chan_name))
 
