@@ -33,45 +33,62 @@ def find_chan(image,channel):
         if chan.getLabel() == channel:
             return i
     return -1
+def check_for_mask(conn,imageId):
+    ImageMask = False
+    roi_service = conn.getRoiService()
+    result = roi_service.findByImage(imageId, None)
+    for roi in result.rois:
+        for i,s in enumerate(roi.copyShapes()):
+            if type(s) == omero.model.MaskI:
+                ImageMask = True
+                break
+    return ImageMask
+# We have a helper function for creating an ROI and linking it to new shapes
+def create_roi(img, shapes):
+    # create an ROI, link it to Image
+    roi = omero.model.RoiI()
+    # use the omero.model.ImageI that underlies the 'image' wrapper
+    roi.setImage(img._obj)
+    for shape in shapes:
+        roi.addShape(shape)
+    # Save the ROI (saves any linked shapes too)
+    return updateService.saveAndReturnObject(roi)
 
-
-def process_images(conn, parameter_map):
+def segment_images(client,conn, image_ids):
     """
-    Process the script params to make a list of channel_offsets, then iterate
-    through the images creating a new image from each with the specified
-    channel offsets
+    Load images, segment cells using Cellpose, return masks as OMERO ROIs
     """
+    # check if CUDA is enabled
+    use_GPU = models.use_gpu()
+    print('>>> GPU activated? %d'%use_GPU)
+    if use_GPU ==True:
+        GPUmessage = '>>> GPU activated'
+    else:
+        GPUmessage = '>>> GPU not activated'
+    client.setOutput(rstring(GPUmessage))
+    seg_chan_name = parameter_map["Segmentation_Channel"]
+    #client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
+    client.setOutput(rstring('Segmentation Channel:')+rstring(seg_chan_name))
 
+    #load cellpose model
+    model = models.Cellpose(gpu=use_GPU,model_type='cyto')
     message = ""
-
-    # Get the images
-    images, log_message = script_utils.get_objects(conn, parameter_map)
-    message += log_message
-    if not images:
-        return None, None, message
-    image_ids = [i.getId() for i in images]
-    return images,  message
-
-# load
-def load_images(conn, image_id):
-    """
-    Load the images in the specified dataset
-    :param conn: The BlitzGateway
-    :param dataset_id: The dataset's id
-    :return: The Images or None
-    """
-    dataset = conn.getObject("Dataset", dataset_id)
-    images = []
-    if dataset is None:
-        return None
-    for image in dataset.listChildren():
-        images.append(image)
-    if len(images) == 0:
-        return None
-
-    for image in images:
-        print("---- Processing image", image.id)
-    return images
+    for imageId in image_ids:
+        image = conn.getObject("Image", imageId)
+        print("---- Processing image ", image.getId(), image.getName())
+        ImageMask = check_for_mask(conn,imageId)
+        if ImageMask == False:
+            pixels = image.getPrimaryPixels()
+            seg_chan_num = find_chan(image,seg_chan)
+            seg_chan_pixels = pixels.getPlane(0, seg_chan_num, 0)
+            masks, flows, styles, diams = model.eval(seg_chan_pixels, diameter=20,flow_threshold=0)
+            # create segmentation roi
+            updateService = conn.getUpdateService()
+            msks = omero_rois.masks_from_label_image(label(masks))
+            create_roi(image,msks)
+        else:
+            print('already contains a mask')
+    return
 
 def get_image_list(conn,parameter_map):
     """
@@ -134,34 +151,14 @@ def run_script():
 
     try:
         parameter_map = client.getInputs(unwrap=True)
-
-
-
-        #script_params = client.getInputs(unwrap=True)
-
-
         # wrap client to use the Blitz Gateway
         conn = BlitzGateway(client_obj=client)
-
-        #images, message = get_image_list(conn, script_params)
-
         images,message= get_image_list(conn, parameter_map)
-        for image in images:
-            print(image)
+        segment_images(client,conn,images)
+        message = 'Processed ' + str(len(images)) + ' images'
         # Return message, new image and new dataset (if applicable) to the
         # client
-    #    client.setOutput("Message", rstring(message))
-    #    if len(images) == 1:
-        #    client.setOutput("Image", robject(images[0]._obj))
-
-
-
-
-
-        message = 'Processed ' + str(len(images)) + 'images'
-        # Return message, new image and new dataset (if applicable) to the
-        # client
-        client.setOutput("Message", rstring(message))
+        client.setOutput(rstring(message))
 
     finally:
         client.closeSession()
