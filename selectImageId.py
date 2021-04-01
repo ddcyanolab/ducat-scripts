@@ -49,9 +49,10 @@ def run_script():
                 description="List of Dataset IDs or Image IDs to "
                 "process.").ofType(rlong(0)),
 
-            scripts.Bool(
-                "Segmentation_Channel", grouping="3", default=True,
-                description="Choose to include this channel in the output image"),
+        #    scripts.String(
+            #    "Segmentation_Channel", optional=true, grouping="3",
+            #    default='DsRed',
+                #description="Channel to use for cell segmentation"),
 
 
         )
