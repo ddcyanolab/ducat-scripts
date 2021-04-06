@@ -33,22 +33,27 @@ def find_chan(image,channel):
         if chan.getLabel() == channel:
             return i
     return -1
-def check_for_mask(conn,imageId):
+def check_for_mask(conn,imageId,seg_chan_name):
     ImageMask = False
     roi_service = conn.getRoiService()
     result = roi_service.findByImage(imageId, None)
     for roi in result.rois:
+        if roi.getName() is not None:
+            name = roi.getName().getValue()
+            maskName = 'Cell_mask_' + seg_chan_name
         for i,s in enumerate(roi.copyShapes()):
-            if type(s) == omero.model.MaskI:
+            if type(s) == omero.model.MaskI and name == maskName:
                 ImageMask = True
                 break
     return ImageMask
 # We have a helper function for creating an ROI and linking it to new shapes
-def create_roi(conn,img, shapes):
+def create_roi(conn,img, shapes,seg_chan_name):
     # create an ROI, link it to Image
     roi = omero.model.RoiI()
     # use the omero.model.ImageI that underlies the 'image' wrapper
     roi.setImage(img._obj)
+    maskName = 'Cell_mask_' + seg_chan_name
+    roi.setName(rstring(maskName))
     for shape in shapes:
         roi.addShape(shape)
     # Save the ROI (saves any linked shapes too)
@@ -79,7 +84,7 @@ def segment_images(client,conn, image_ids,parameter_map):
     for imageId in image_ids:
         image = conn.getObject("Image", imageId)
         print("---- Processing image ", image.getId(), image.getName())
-        ImageMask = check_for_mask(conn,imageId)
+        ImageMask = check_for_mask(conn,imageId,seg_chan_name)
         if ImageMask == False:
             pixels = image.getPrimaryPixels()
             seg_chan_num = find_chan(image,seg_chan_name)
@@ -88,10 +93,10 @@ def segment_images(client,conn, image_ids,parameter_map):
             diameter=diameter,flow_threshold=flow_threshold)
             # create segmentation roi
             msks = omero_rois.masks_from_label_image(label(masks))
-            create_roi(conn,image,msks)
+            create_roi(conn,image,msks,seg_chan_name)
         else:
             skipped += 1
-            print('already contains a mask')
+            print('already contains a ' + seg_chan_name + ' mask')
         message = str(len(image_ids)) + ' images'
         skipped_message = str(skipped) + ' images'
 
