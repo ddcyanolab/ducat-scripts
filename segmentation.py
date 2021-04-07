@@ -37,6 +37,8 @@ def check_for_mask(conn,imageId,seg_chan_name):
     ImageMask = False
     roi_service = conn.getRoiService()
     result = roi_service.findByImage(imageId, None)
+    name = None
+    maskName = None
     for roi in result.rois:
         if roi.getName() is not None:
             name = roi.getName().getValue()
