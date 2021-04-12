@@ -37,12 +37,14 @@ def check_for_mask(conn,imageId,seg_chan_name):
     ImageMask = False
     roi_service = conn.getRoiService()
     result = roi_service.findByImage(imageId, None)
-    name = None
-    maskName = None
+
     for roi in result.rois:
         if roi.getName() is not None:
             name = roi.getName().getValue()
             maskName = 'Cell_mask_' + seg_chan_name
+        else:
+            name = None
+            maskName = None
         for i,s in enumerate(roi.copyShapes()):
             if type(s) == omero.model.MaskI and name == maskName:
                 ImageMask = True
