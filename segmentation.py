@@ -78,7 +78,10 @@ def segment_images(client,conn, image_ids,parameter_map):
     client.setOutput('GPU Status ',rstring(GPUmessage))
     seg_chan_name = parameter_map["Segmentation_Channel"]
     diameter = parameter_map["Diameter"]
-    flow_threshold = parameter_map["Flow_threshold"]
+    if parameter_map["Flow_threshold"] is not None:
+        flow_threshold = parameter_map["Flow_threshold"]
+    else:
+        flow_threshold = None
     #client.setOutput("Channel%s" % i, wrap(str(ch.getLabel())))
     client.setOutput('Channel',rstring(seg_chan_name))
 
@@ -166,7 +169,7 @@ def run_script():
             default=20,
             description="Approximate size of cells, in pixels"),
         scripts.Float(
-            "Flow_threshold", optional=True, grouping="5",
+            "Flow_threshold", optional=True, grouping="5",default= None
             description="Error checking stringency"),
 
         authors=["Jonathan Sakkos"],
