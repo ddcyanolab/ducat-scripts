@@ -71,7 +71,7 @@ def segment_images(client,conn, image_ids,parameter_map):
     # check if CUDA is enabled
     use_GPU = models.use_gpu()
     print('>>> GPU activated? %d'%use_GPU)
-    if use_GPU == 1 or True:
+    if use_GPU == 1 or use_GPU == True:
         GPUmessage = 'active'
     else:
         GPUmessage = 'inactive'
@@ -166,8 +166,7 @@ def run_script():
             default=20,
             description="Approximate size of cells, in pixels"),
         scripts.Float(
-            "Flow_threshold", optional=False, grouping="5",
-            default=0.4,
+            "Flow_threshold", optional=True, grouping="5",
             description="Error checking stringency"),
 
         authors=["Jonathan Sakkos"],
