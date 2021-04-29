@@ -169,7 +169,7 @@ def run_script():
             default=20,
             description="Approximate size of cells, in pixels"),
         scripts.Float(
-            "Flow_threshold", optional=True, grouping="5",
+            "Flow_threshold", optional=False, grouping="5",
             description="Error checking stringency"),
 
         authors=["Jonathan Sakkos"],
