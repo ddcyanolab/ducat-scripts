@@ -24,13 +24,15 @@ def delete_rois(conn,image_ids):
     """
     Delete all ROIs from an image
     """
-
+    n = 0
     for imageId in image_ids:
         roi_service = conn.getRoiService()
         result = roi_service.findByImage(imageId, None)
         roi_ids = [roi.id.val for roi in result.rois]
-        conn.deleteObjects("Roi", roi_ids)
-    message = str(len(image_ids)) + ' images'
+        if roi_ids != []:
+            conn.deleteObjects("Roi", roi_ids)
+            n+=1
+    message = str(len(n)) + ' images'
     return message
 
 def get_image_list(conn,parameter_map):
