@@ -32,7 +32,7 @@ def delete_rois(conn,image_ids):
         if roi_ids != []:
             conn.deleteObjects("Roi", roi_ids)
             n+=1
-    message = str(len(n)) + ' images'
+    message = str(n) + ' images'
     return message
 
 def get_image_list(conn,parameter_map):
