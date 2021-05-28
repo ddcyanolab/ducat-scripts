@@ -1,0 +1,5 @@
+omero-py @ file:///C:/Miniconda/conda-bld/omero-py_1616410779787/work
+cellpose
+numpy
+scikit-image
+omero-rois==0.3.0

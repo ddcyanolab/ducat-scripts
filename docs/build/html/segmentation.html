@@ -6,13 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Segmentation Scripts &#8212; Ducat Lab OMERO Scripts 0.0.1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Colab notebooks" href="examples.html" />
@@ -35,8 +34,37 @@
             
   <div class="section" id="segmentation-scripts">
 <h1>Segmentation Scripts<a class="headerlink" href="#segmentation-scripts" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="segmentation">
-<h2>Segmentation<a class="headerlink" href="#segmentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-segmentation">
+<span id="segmentation"></span><h2>Segmentation<a class="headerlink" href="#module-segmentation" title="Permalink to this headline">¶</a></h2>
+<p>This is an OMERO server-side script that uses Cellpose for cell segmentation.</p>
+<dl class="py function">
+<dt id="segmentation.find_chan">
+<code class="sig-prename descclassname"><span class="pre">segmentation.</span></code><code class="sig-name descname"><span class="pre">find_chan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#segmentation.find_chan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the specified channel number from the image metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="segmentation.get_image_list">
+<code class="sig-prename descclassname"><span class="pre">segmentation.</span></code><code class="sig-name descname"><span class="pre">get_image_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_map</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#segmentation.get_image_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets image IDs from the list of images or dataset
+:param conn: The BlitzGateway
+:param parameter_map: The dataset’s id
+:return: image IDs or None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="segmentation.run_script">
+<code class="sig-prename descclassname"><span class="pre">segmentation.</span></code><code class="sig-name descname"><span class="pre">run_script</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#segmentation.run_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main entry point of the script, as called by the client via the
+scripting service, passing the required parameters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="segmentation.segment_images">
+<code class="sig-prename descclassname"><span class="pre">segmentation.</span></code><code class="sig-name descname"><span class="pre">segment_images</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_map</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#segmentation.segment_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load images, segment cells using Cellpose, return masks as OMERO ROIs</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -60,7 +88,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Segmentation Scripts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#segmentation">Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-segmentation">Segmentation</a></li>
 </ul>
 </li>
 </ul>
@@ -104,7 +132,7 @@
       &copy;2021, Jonathan Sakkos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
