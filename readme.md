@@ -1,4 +1,4 @@
-[![Documentation Status](https://ducat-lab-omero-scripts.readthedocs.io/en/latest/)](https://ducat-lab-omero-scripts.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/ducat-lab-omero-scripts/badge/?version=latest)](https://ducat-lab-omero-scripts.readthedocs.io/en/latest/?badge=latest)
 # A collection of server-side scripts for OMERO
 ### Location of scripts repository:
 ```
