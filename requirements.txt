@@ -1,4 +1,4 @@
-omero-py @ file:///C:/Miniconda/conda-bld/omero-py_1616410779787/work
+omero-py
 cellpose
 numpy
 scikit-image
