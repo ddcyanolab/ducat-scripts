@@ -66,6 +66,32 @@ scripting service, passing the required parameters.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-delete_rois">
+<span id="delete-rois"></span><h2>Delete ROIs<a class="headerlink" href="#module-delete_rois" title="Permalink to this headline">¶</a></h2>
+<p>This is an OMERO server-side script to perform bulk deletion of mask roi annotations.</p>
+<dl class="py function">
+<dt id="delete_rois.delete_rois">
+<code class="sig-prename descclassname"><span class="pre">delete_rois.</span></code><code class="sig-name descname"><span class="pre">delete_rois</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_ids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete_rois.delete_rois" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all ROIs from an image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="delete_rois.get_image_list">
+<code class="sig-prename descclassname"><span class="pre">delete_rois.</span></code><code class="sig-name descname"><span class="pre">get_image_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_map</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete_rois.get_image_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets image IDs from the list of images or dataset
+:param conn: The BlitzGateway
+:param parameter_map: The dataset’s id
+:return: image IDs or None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="delete_rois.run_script">
+<code class="sig-prename descclassname"><span class="pre">delete_rois.</span></code><code class="sig-name descname"><span class="pre">run_script</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#delete_rois.run_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main entry point of the script, as called by the client via the
+scripting service, passing the required parameters.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -89,6 +115,7 @@ scripting service, passing the required parameters.</p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Segmentation Scripts</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-segmentation">Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-delete_rois">Delete ROIs</a></li>
 </ul>
 </li>
 </ul>
